@@ -69,7 +69,7 @@ return {
             end
             return t
           end,
-          -- console = "externalTerminal", 
+          -- console = "externalTerminal",
           console = "integratedTerminal",
         },
       }
@@ -109,6 +109,65 @@ return {
           end,
         },
       }
+
+      dap.adapters.codelldb = {
+        type = "server",
+        port = "${port}",
+        executable = {
+          command = vim.fn.stdpath("data") .. "/mason/bin/codelldb", -- ต้องติดตั้งผ่าน Mason
+          args = { "--port", "${port}" },
+        },
+      }
+
+      dap.configurations.rust = {
+        {
+          name = "Launch file",
+          type = "codelldb",
+          request = "launch",
+          program = function()
+            return vim.fn.input("Path to executable: ", vim.fn.getcwd() .. "/target/debug/", "file")
+          end,
+          cwd = "${workspaceFolder}",
+          stopOnEntry = false,
+          args = function()
+            local input = vim.fn.input("Program arguments: ")
+            local t = {}
+            for arg in string.gmatch(input, "%S+") do
+              table.insert(t, arg)
+            end
+            return t
+          end,
+        },
+      }
+
+      dap.adapters.java = function(callback, config)
+        callback({
+          type = "server",
+          host = "127.0.0.1",
+          port = config.port,
+        })
+      end
+
+      dap.configurations.java = {
+        {
+          type = "java",
+          request = "launch",
+          name = "Launch Java",
+          cwd = "${workspaceFolder}",
+          console = "integratedTerminal",
+          program = function()
+            return vim.fn.input("Path to class/main: ", vim.fn.getcwd() .. "/out/production/", "file")
+          end,
+          args = function()
+            local input = vim.fn.input("Program arguments: ")
+            local t = {}
+            for arg in string.gmatch(input, "%S+") do
+              table.insert(t, arg)
+            end
+            return t
+          end,
+        },
+      }
     end,
   },
 
@@ -121,4 +180,3 @@ return {
     end,
   },
 }
-
