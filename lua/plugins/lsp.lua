@@ -8,13 +8,33 @@ return {
     },
   },
 
-  {
-    "mfussenegger/nvim-dap",
+   {
     "rcarriga/nvim-dap-ui",
-    "theHamsta/nvim-dap-virtual-text",
-    "nvim-neotest/nvim-nio",
-  },
+    dependencies = { "mfussenegger/nvim-dap" },
+    config = function()
+      local dap = require("dap")
+      local dapui = require("dapui")
 
+      dapui.setup()
+
+      dap.listeners.after.event_initialized["dapui_config"] = function()
+        dapui.open()
+      end
+      dap.listeners.before.event_terminated["dapui_config"] = function()
+        dapui.close()
+      end
+      dap.listeners.before.event_exited["dapui_config"] = function()
+        dapui.close()
+      end
+    end,
+  },
+  {
+    "leoluz/nvim-dap-go",
+    dependencies = { "mfussenegger/nvim-dap" },
+    config = function()
+      require("dap-go").setup()
+    end,
+  },
   {
     "junegunn/fzf.vim",
     dependencies = { "junegunn/fzf" },
@@ -27,7 +47,13 @@ return {
       require("nvim-treesitter.configs").setup({
         highlight = { enable = true }, -- เปิด highlight
         indent = { enable = true }, -- auto indent
-        ensure_installed = { "lua", "go", "c", "cpp", "python" }, -- เลือกภาษา
+        ensure_installed = {
+          "lua",
+          "go",
+          "c",
+          "cpp",
+          "python",
+        }, -- เลือกภาษา
       })
     end,
   },
@@ -126,34 +152,6 @@ return {
           { name = "luasnip" },
         }),
       })
-    end,
-  },
-
-  {
-    "rcarriga/nvim-dap-ui",
-    dependencies = { "mfussenegger/nvim-dap" },
-    config = function()
-      local dap = require("dap")
-      local dapui = require("dapui")
-
-      dapui.setup()
-
-      dap.listeners.after.event_initialized["dapui_config"] = function()
-        dapui.open()
-      end
-      dap.listeners.before.event_terminated["dapui_config"] = function()
-        dapui.close()
-      end
-      dap.listeners.before.event_exited["dapui_config"] = function()
-        dapui.close()
-      end
-    end,
-  },
-  {
-    "leoluz/nvim-dap-go",
-    dependencies = { "mfussenegger/nvim-dap" },
-    config = function()
-      require("dap-go").setup()
     end,
   },
 }

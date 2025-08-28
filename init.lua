@@ -1,9 +1,6 @@
 -- bootstrap lazy.nvim, LazyVim and your plugins
 -- bootstrap lazy.nvim, LazyVim and your plugins
 require("config.lazy")
-require("plugins.lsp")
-
-require("lazy").setup("plugins")
 
 vim.opt.mouse = "a"
 vim.opt.clipboard = "unnamedplus"
