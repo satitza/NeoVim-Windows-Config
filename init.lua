@@ -3,10 +3,7 @@
 require("config.lazy")
 require("plugins.lsp")
 
-require("lazy").setup({
-  -- plugin อื่นๆ
-  { import = "plugins.dap" }, -- โหลด config dap.lua
-})
+require("lazy").setup("plugins")
 
 vim.opt.mouse = "a"
 vim.opt.clipboard = "unnamedplus"
