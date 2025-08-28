@@ -1,40 +1,39 @@
 return {
   {
     "neovim/nvim-lspconfig",
+    dependencies = {
+      "williamboman/mason.nvim", -- installer
+      "williamboman/mason-lspconfig.nvim", -- bridge
+    },
     opts = {
       servers = {
-        clangd = {}, -- enable C/C++
+        -- C / C++
+        clangd = {},
+
+        -- Go
+        gopls = {},
+
+        -- Python
+        pyright = {},
+
+        -- Java
+        jdtls = {},
+
+        -- JavaScript / TypeScript
+        tsserver = {},
+
+        -- C# / .NET (ใช้ omnisharp)
+        omnisharp = {
+          -- ถ้าใช้ Windows แนะนำให้ชี้ไปที่ binary ของ omnisharp
+          -- cmd = { "dotnet", "path/to/OmniSharp.dll" },
+        },
+
+        -- VB.NET → ใช้ server เดียวกับ C# (omnisharp รองรับ)
+        -- ไม่มี vb แยกต่างหาก
       },
     },
   },
 
-   {
-    "rcarriga/nvim-dap-ui",
-    dependencies = { "mfussenegger/nvim-dap" },
-    config = function()
-      local dap = require("dap")
-      local dapui = require("dapui")
-
-      dapui.setup()
-
-      dap.listeners.after.event_initialized["dapui_config"] = function()
-        dapui.open()
-      end
-      dap.listeners.before.event_terminated["dapui_config"] = function()
-        dapui.close()
-      end
-      dap.listeners.before.event_exited["dapui_config"] = function()
-        dapui.close()
-      end
-    end,
-  },
-  {
-    "leoluz/nvim-dap-go",
-    dependencies = { "mfussenegger/nvim-dap" },
-    config = function()
-      require("dap-go").setup()
-    end,
-  },
   {
     "junegunn/fzf.vim",
     dependencies = { "junegunn/fzf" },

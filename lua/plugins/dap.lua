@@ -1,16 +1,42 @@
-
 return {
-  -- "mfussenegger/nvim-dap",
-  -- "rcarriga/nvim-dap-ui",
-  "theHamsta/nvim-dap-virtual-text",
-   "nvim-neotest/nvim-nio",
-   "williamboman/mason.nvim",
-  
-  
-  config = function()
-    local dap = require("dap")
-    local dapui = require("dapui")
+  {
+    "theHamsta/nvim-dap-virtual-text",
+    "nvim-neotest/nvim-nio",
+    "williamboman/mason.nvim",
 
-    dapui.setup()
-  end,
+    config = function()
+      local dap = require("dap")
+      local dapui = require("dapui")
+
+      dapui.setup()
+    end,
+  },
+
+  {
+    "rcarriga/nvim-dap-ui",
+    dependencies = { "mfussenegger/nvim-dap" },
+    config = function()
+      local dap = require("dap")
+      local dapui = require("dapui")
+
+      dapui.setup()
+
+      dap.listeners.after.event_initialized["dapui_config"] = function()
+        dapui.open()
+      end
+      dap.listeners.before.event_terminated["dapui_config"] = function()
+        dapui.close()
+      end
+      dap.listeners.before.event_exited["dapui_config"] = function()
+        dapui.close()
+      end
+    end,
+  },
+  {
+    "leoluz/nvim-dap-go",
+    dependencies = { "mfussenegger/nvim-dap" },
+    config = function()
+      require("dap-go").setup()
+    end,
+  },
 }
