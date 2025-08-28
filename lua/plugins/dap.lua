@@ -10,7 +10,11 @@ return {
     local dapui = require("dapui")
 
     -- Adapter, configurations, UI, keymap
-    dap.adapters.python = { type = "executable", command = "python", args = { "-m", "debugpy.adapter" } }
+    dap.adapters.python = {
+      type = "executable",
+      command = "C:\\Users\\st_sa\\.pyenv\\pyenv-win\\versions\\3.13.5\\python.exe",
+      args = { "-m", "debugpy.adapter" },
+    }
     dap.configurations.python = {
       {
         type = "python",
