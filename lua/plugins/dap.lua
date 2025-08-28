@@ -27,7 +27,7 @@ return {
       -- 🔹 Python debug adapter
       dap.adapters.python = {
         type = "executable",
-        command = "python", -- ชี้ไปที่ python ที่มี debugpy
+        command = "C:\\Users\\st_sa\\.pyenv\\pyenv-win\\versions\\3.13.5\\python.exe", -- ชี้ไปที่ python ที่มี debugpy
         args = { "-m", "debugpy.adapter" },
       }
       dap.configurations.python = {
@@ -37,7 +37,7 @@ return {
           name = "Launch file",
           program = "${file}",
           pythonPath = function()
-            return "python"
+            return "C:\\Users\\st_sa\\.pyenv\\pyenv-win\\versions\\3.13.5\\python.exe"
           end,
         },
       }
@@ -54,10 +54,23 @@ return {
           type = "cppdbg",
           request = "launch",
           program = function()
-            return vim.fn.input("Path to executable: ", vim.fn.getcwd() .. "/", "file")
+            -- compile ก่อน ถ้าอยาก auto compile
+            vim.fn.system("gcc -g main.c -o main.exe -lws2_32")
+            return vim.fn.getcwd() .. "\\main.exe" -- หรือ main.exe บน Windows
+            -- return vim.fn.input("Path to executable: ", vim.fn.getcwd() .. "/", "file")
           end,
           cwd = "${workspaceFolder}",
           stopAtEntry = true,
+          args = function()
+            local input = vim.fn.input("Program arguments: ")
+            local t = {}
+            for arg in string.gmatch(input, "%S+") do
+              table.insert(t, arg)
+            end
+            return t
+          end,
+          -- console = "externalTerminal", 
+          console = "integratedTerminal",
         },
       }
       dap.configurations.c = dap.configurations.cpp
@@ -108,3 +121,4 @@ return {
     end,
   },
 }
+
