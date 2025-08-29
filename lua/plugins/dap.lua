@@ -24,6 +24,10 @@ return {
         dapui.close()
       end
 
+      -- set log level ก่อนใช้งาน
+      dap.set_log_level("TRACE")
+      print("dap log file:", vim.fn.stdpath("cache") .. "/dap.log")
+
       -- 🔹 Python debug adapter
       dap.adapters.python = {
         type = "executable",
@@ -60,9 +64,11 @@ return {
             -- return vim.fn.input("Path to executable: ", vim.fn.getcwd() .. "/", "file")
           end,
           cwd = "${workspaceFolder}",
-          stopAtEntry = true,
+          stopAtEntry = false,
           args = function()
             local input = vim.fn.input("Program arguments: ")
+            -- ลบ null chars (^@) ออก
+            input = input:gsub("%z", "")
             local t = {}
             for arg in string.gmatch(input, "%S+") do
               table.insert(t, arg)
