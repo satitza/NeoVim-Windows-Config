@@ -46,41 +46,42 @@ return {
         },
       }
 
-      -- 🔹 C / C++ debug adapter (ผ่าน cpptools)
-      dap.adapters.cppdbg = {
-        id = "cppdbg",
-        type = "executable",
-        command = "C:\\Users\\st_sa\\.vscode\\extensions\\ms-vscode.cpptools-1.27.2-win32-x64\\debugAdapters\\bin\\OpenDebugAD7.exe", -- มาจาก cpptools
-      }
-      dap.configurations.cpp = {
-        {
-          name = "Launch file",
-          type = "cppdbg",
-          request = "launch",
-          program = function()
-            -- compile ก่อน ถ้าอยาก auto compile
-            vim.fn.system("gcc -g main.c -o main.exe -lws2_32")
-            return vim.fn.getcwd() .. "\\main.exe" -- หรือ main.exe บน Windows
-            -- return vim.fn.input("Path to executable: ", vim.fn.getcwd() .. "/", "file")
-          end,
-          cwd = "${workspaceFolder}",
-          stopAtEntry = false,
-          args = function()
-            local input = vim.fn.input("Program arguments: ")
-            -- ลบ null chars (^@) ออก
-            input = input:gsub("%z", "")
-            local t = {}
-            for arg in string.gmatch(input, "%S+") do
-              table.insert(t, arg)
-            end
-            return t
-          end,
-          -- console = "externalTerminal",
-          console = "integratedTerminal",
+      -- 🔹 C / C++ debug adapter (ผ่าน codelldb)
+      dap.adapters.codelldb = {
+        type = "server",
+        port = "${port}",
+        executable = {
+          -- 👉 เปลี่ยน path ตรงนี้ให้ตรงกับที่ L โหลดมา
+          command = "C:\\Tools\\codelldb-win32-x64\\adapter\\codelldb.exe",
+          args = { "--port", "${port}" },
         },
       }
-      dap.configurations.c = dap.configurations.cpp
 
+      dap.configurations.cpp = {
+        {
+          name = "Launch file (codelldb)",
+          type = "codelldb",
+          request = "launch",
+          program = function()
+            -- compile auto
+            vim.fn.system("gcc -g main.c -o main.exe -lws2_32")
+            return vim.fn.getcwd() .. "\\main.exe"
+          end,
+          cwd = "${workspaceFolder}",
+          -- stopOnEntry = true, -- ปิดไป
+          console = "integratedTerminal",
+          -- เพิ่ม breakpoint อัตโนมัติที่ main
+          setupCommands = {
+            {
+              text = "break set -n main",
+              description = "Break at main()",
+              ignoreFailures = false,
+            },
+          },
+        },
+      }
+
+      dap.configurations.c = dap.configurations.cpp
       -- 🔹 JavaScript / TypeScript (ผ่าน node2 adapter)
       dap.adapters.node2 = {
         type = "executable",
@@ -116,15 +117,6 @@ return {
         },
       }
 
-      dap.adapters.codelldb = {
-        type = "server",
-        port = "${port}",
-        executable = {
-          command = vim.fn.stdpath("data") .. "/mason/bin/codelldb", -- ต้องติดตั้งผ่าน Mason
-          args = { "--port", "${port}" },
-        },
-      }
-
       dap.configurations.rust = {
         {
           name = "Launch file",
@@ -143,6 +135,7 @@ return {
             end
             return t
           end,
+          console = "externalTerminal",
         },
       }
 
