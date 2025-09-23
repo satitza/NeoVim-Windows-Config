@@ -24,6 +24,17 @@ return {
         dapui.close()
       end
 
+      local lspconfig = require("lspconfig")
+
+      lspconfig.omnisharp.setup({
+        cmd = {
+          vim.fn.stdpath("data") .. "\\mason\\bin\\omnisharp.cmd",
+          "--languageserver",
+          "--hostPID",
+          tostring(vim.fn.getpid()),
+        },
+      })
+
       -- set log level ก่อนใช้งาน
       dap.set_log_level("TRACE")
       print("dap log file:", vim.fn.stdpath("cache") .. "/dap.log")
