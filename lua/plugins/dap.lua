@@ -103,7 +103,7 @@ return {
       -- 🔹 C# / .NET (OmniSharp)
       dap.adapters.coreclr = {
         type = "executable",
-        command = vim.fn.stdpath("data") .. "/mason/bin/netcoredbg",
+        command = vim.fn.stdpath("data") .. "\\mason\\packages\\netcoredbg\\netcoredbg\\netcoredbg.exe",
         args = { "--interpreter=vscode" },
       }
       dap.configurations.cs = {
@@ -112,7 +112,7 @@ return {
           name = "Launch - netcoredbg",
           request = "launch",
           program = function()
-            return vim.fn.input("Path to dll: ", vim.fn.getcwd() .. "/bin/Debug/", "file")
+            return vim.fn.input("Path to dll or exe : ", vim.fn.getcwd() .. "\\bin\\Debug\\", "file")
           end,
         },
       }
